@@ -1,0 +1,8 @@
+name: meal-plan
+channels:
+- conda-forge
+dependencies:
+- python
+- pydantic
+- dspy
+- requests
