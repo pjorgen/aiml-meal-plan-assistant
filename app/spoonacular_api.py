@@ -3,7 +3,7 @@ import os
 from classes import *
 
 # Function to search recipes using Spoonacular API
-def search_recipes(model: SearchRecipesRequest) -> SearchRecipesResponse:
+def search_recipes(model: list[SearchRecipesRequest]) -> list[SearchRecipesResponse]:
     """
     Search for recipes using Spoonacular API.
 
@@ -14,10 +14,14 @@ def search_recipes(model: SearchRecipesRequest) -> SearchRecipesResponse:
     - SearchRecipesResponse: Parsed response model
     """
     url = "https://api.spoonacular.com/recipes/complexSearch"
-    model.apiKey = os.getenv("SPOONAPIKEY")
-    params = model.model_dump(exclude_none=True)
-    response = requests.get(url, params=params)
-    response.raise_for_status()
 
-    data = response.json()
-    return SearchRecipesResponse(**data)
+    recipes = []
+    for meal in model:
+        meal.apiKey = os.getenv("SPOONAPIKEY")
+        params = meal.model_dump(exclude_none=True)
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+
+        data = response.json()
+        recipes.append(SearchRecipesResponse(**data))
+    return recipes

@@ -151,6 +151,7 @@ defines the connection to the ollama model. There's the DSPy module signature an
 against the test data and saves the optimized module to file for reuse (saved to `optimized\extract_optimized.json`).
 
 #### Day 2
+
 I realized while thinking about the project away from my desk that I may be approaching the DSPy optimization and pipeline
 in a naive manner. By attempting to extract all information in a single LLM call, DSPy and the LLM are unable to speccialize
 as much as they could otherwise, leading to the low scores seen even after optimization. Further, the information extraction
@@ -187,10 +188,40 @@ With the updates to the DSPy code, I also need to revisit the optimization train
 the to-do list. Having the existing experience with it from yesterday will help, but having to create all-new training data
 may be a pain, especially since the structure has become more complex and specific.
 
+#### Day 3
+
+Goals for today are to 1) put a front end UI on the project and 2) pipe in the input prompt and pipe out the prompt 
+summary and recipes to the output in user-friendly formats. If there is time left, looking again at caching or optimization
+would be the next steps.
+
+I started with templating out a UI using Streamlit. Installing the package was easy, which was a nice change after trying
+to install the spoonacular library. It was actually pretty easy to get started with streamlit, and I was able to redevelop
+my `app.py` program to take an input prompt, process it, and output each piece in steps while notifying the user that 
+processing is happening. I was also able to add a couple of buttons as quick-links to demo prompts, which was neat.
+
+During testing of the UI, I also ended up fixing a few issues with the spoonacular API and class definitions. Apparently 
+the Spoonacular API documentation also lied about what some of the values for diets are, and some of the return values 
+were not marked as Optional in my classes and resulting in thrown validation errors. These were pretty easy to fix.
+
+The next issue I ran into was that my dspy information extraction was being quite annoying when creating the list of
+ingredients to include. The model kept returning ingredients it thought were useful instead of ones specifically mentioned,
+which caused the Spoonacular API to return no matching recipes. I ended up tweaking the signatures to explicitly define
+the string literals expected for the cuisines, diet, and intolerances. This was a bit of a pain since python Literal[] 
+does not support dynamic value setting, so I couldn't unpack the existing enums into a literal easily. I ended up having
+ChatGPT do the unpacking for me.
+
+Once I figured out the issues introduced by the rework, I started running the optimization again and quickly found
+more failures. Additionally, running the optimizer often threw a few weird errors that looked like bad output from the LLM.
+Because I had started with the smallest 1B version of gemma3, I figured that it could be an issue with the model not being
+smart enough for what I needed, and I took the opportunity to upgrade to the 4B version of gemma3 instead. Now running 
+the optimization is much more stable, though I'm still waiting on results since it takes about an hour to run still. 
+Depending on the results I may decide to run the optimizer again with higher settings, but we'll see.
+
 
 ## Future Development
 There is limited time and effort available to complete this project at this time, which leaves several features for future
 consideration. These are parked here for reference.
+- Local vector database for storing and caching recipes (Side project: digitize and store recipes from recipe books here)
 - Static site for viewing, referencing, and rating recipes in the cache
 - Inventory management system for automatic integration into recipes, including auto-updating inventory after meal planning
 - Multi-user support for saving preferences, dietary restrictions, and nutritional targets
@@ -199,3 +230,5 @@ consideration. These are parked here for reference.
 - Initial plan: 4 hours
 - Dev day 1 (initial dspy module and optimization): 8 hours
 - Dev day 2 (additional dspy and api setup): 8 hours
+- Dev day 3 (Adding StreamLit UI and reworking dspy): 9 hours
+- 

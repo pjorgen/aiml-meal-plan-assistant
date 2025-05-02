@@ -1,7 +1,8 @@
 import dspy
 
 lm = dspy.LM(
-    model='ollama/gemma3:1b',
+    model='ollama/gemma3:4b',
     api_base='http://localhost:11434',
-    api_key=''
+    api_key='',
+    cache=False
 )

@@ -6,3 +6,5 @@ dependencies:
 - pydantic
 - dspy
 - requests
+- streamlit
+-
