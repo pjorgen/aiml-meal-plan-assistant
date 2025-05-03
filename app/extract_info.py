@@ -7,91 +7,223 @@ from enums import *
 
 # Define DSPy Signatures
 class ExtractMealCount(dspy.Signature):
-    """Given a prompt, determine the total number of meals to plan"""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single integer, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "How many meals are being requested?"
+    """
     meal_plan_prompt: str = dspy.InputField()
-    meal_count: int = dspy.OutputField(desc="An integer that is the total number of meals")
+    meal_count: int = dspy.OutputField()
 
 class ExtractPeoplePerMeal(dspy.Signature):
-    """Given a prompt and a number of meals, return an integer that defines the number of people attending each meal"""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single integer, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "How many people are attending each meal?"
+    """
     meal_plan_prompt: str = dspy.InputField()
     meal_count: int = dspy.InputField()
-    people_per_meal: int = dspy.OutputField(desc="An integer that defines the number of people attending each meal")
+    people_per_meal: int = dspy.OutputField()
 
 class ExtractMealTypes(dspy.Signature):
-    """Given a prompt and a number of meals, determine what, if any, type of meal is described or requested for each meal."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a list of strings, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "What meal types are requested?"
+    - If no meal types are requested, return an empty list
+    """
     meal_plan_prompt: str = dspy.InputField()
     meal_count: int = dspy.InputField()
-    meal_types: list[MealTypeLiteral] = dspy.OutputField(desc="A list of strings that describe the type of meal for each meal")
+    meal_types: list[str] = dspy.OutputField()
 
 class ExtractIncludeCuisines(dspy.Signature):
-    """Given a prompt, determine which, if any, cuisines are mentioned as liked or desired."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a list of strings, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "What cuisines are desired, liked, or requested?"
+    - If no cuisines are desired, return an empty list
+    """
     meal_plan_prompt: str = dspy.InputField()
-    include_cuisines: list[CuisineLiteral] = dspy.OutputField(desc="A list of strings that defines the cuisines")
+    include_cuisines: list[str] = dspy.OutputField()
 
 class ExtractExcludeCuisines(dspy.Signature):
-    """Given a prompt, determine which, if any, cuisines are mentioned as not liked or not desired."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a list of strings, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "What cuisines are not desired or disliked?"
+    - If no cuisines match, return an empty list
+    """
     meal_plan_prompt: str = dspy.InputField()
-    exclude_cuisines: list[CuisineLiteral] = dspy.OutputField(desc="A list of strings that defines the cuisines")
+    exclude_cuisines: list[str] = dspy.OutputField()
 
 class ExtractDiets(dspy.Signature):
-    """Given a prompt, determine what, if any, diets are mentioned as needing to be followed."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a list of strings, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "What diets are desired, liked, requested, or being followed?"
+    - If there are no diets mentioned, return an empty list
+    """
     meal_plan_prompt: str = dspy.InputField()
-    diets: list[DietLiteral] = dspy.OutputField(desc="A list of strings that defines the diets")
+    diets: list[str] = dspy.OutputField()
 
 class ExtractIntolerances(dspy.Signature):
-    """Given a prompt, determine what, if any, food intolerances or allergies are described."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a list of strings, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "What food intolerances or allergies are specified, noted, or indicated?"
+    - If there are no food intolerances, return an empty list
+    """
     meal_plan_prompt: str = dspy.InputField()
-    intolerances: list[IntoleranceLiteral] = dspy.OutputField(desc="A list of strings that defines the food intolerances and allergies")
+    intolerances: list[str] = dspy.OutputField()
 
 class ExtractIncludeIngredients(dspy.Signature):
-    """Given a prompt, determine what, if any, foods or ingredients are described as liked, desired, or available. Do not add any that are not explicitly mentioned in the prompt."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Do not include any ingredients not specifically described in the prompt
+    - Return them exactly as a list of strings, with no additional commentary
+    - Your response should answer the question, "What ingredients are requested, available, or desired?"
+    """
     meal_plan_prompt: str = dspy.InputField()
-    include_ingredients: list[str] = dspy.OutputField(desc="A list of strings that defines the ingredients and foods that are liked, desired, or available as specified in the prompt.")
+    include_ingredients: list[str] = dspy.OutputField()
 
 class ExtractExcludeIngredients(dspy.Signature):
-    """Given a prompt, determine what, if any, foods or ingredients are described as disliked, undesired, or unavailable."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Do not include any ingredients not specifically described in the prompt
+    - Return them exactly as a list of strings, with no additional commentary
+    - Your response should answer the question, "What ingredients are unavailable or disliked?"
+    """
     meal_plan_prompt: str = dspy.InputField()
-    exclude_ingredients: list[str] = dspy.OutputField(desc="A list of strings that defines the ingredients and foods that are disliked, undesired, or unavailable as specified in the prompt.")
+    exclude_ingredients: list[str] = dspy.OutputField()
 
 class ExtractHighFiber(dspy.Signature):
-    """Given a prompt, determine if it includes a request for high fiber meals or diets."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a high fiber diet?"
+    - Return a default value of False if no mention is made of fiber
+    """
     meal_plan_prompt: str = dspy.InputField()
-    high_fiber: bool = dspy.OutputField(desc="A boolean indicating whether or not a high fiber diet is indicated.")
+    high_fiber: bool = dspy.OutputField()
 
 class ExtractHighProtein(dspy.Signature):
-    """Given a prompt, determine if it includes a request for high protein meals or diets."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a high protein diet?"
+    - Return a default value of False if no mention is made of protein
+    """
     meal_plan_prompt: str = dspy.InputField()
-    high_protein: bool = dspy.OutputField(desc="A boolean indicating whether or not a high protein diet is indicated.")
+    high_protein: bool = dspy.OutputField()
 
 class ExtractLowCalorie(dspy.Signature):
-    """Given a prompt, determine if it includes a request for low calories meals or diets."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a low calorie diet?"
+    - Return a default value of False if no mention is made of calories
+    """
     meal_plan_prompt: str = dspy.InputField()
-    low_calorie: bool = dspy.OutputField(desc="A boolean indicating whether or not a low calorie diet is indicated.")
+    low_calorie: bool = dspy.OutputField()
 
 class ExtractLowCarb(dspy.Signature):
-    """Given a prompt, determine if it includes a request for low-carb meals or diets."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a low carb diet?"
+    - Return a default value of False if no mention is made of carbs
+    """
     meal_plan_prompt: str = dspy.InputField()
-    low_carb: bool = dspy.OutputField(desc="A boolean indicating whether or not a low carb diet is indicated.")
+    low_carb: bool = dspy.OutputField()
 
 class ExtractLowFat(dspy.Signature):
-    """Given a prompt, determine if it includes a request for low fat meals or diets."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a low fat diet?"
+    - Return a default value of False if no mention is made of fat
+    """
     meal_plan_prompt: str = dspy.InputField()
-    low_fat: bool = dspy.OutputField(desc="A boolean indicating whether or not a low fat diet is indicated.")
+    low_fat: bool = dspy.OutputField()
 
 class ExtractLowCholesterol(dspy.Signature):
-    """Given a prompt, determine if it includes a request for low cholesterol meals or diets."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a low cholesterol diet?"
+    - Return a default value of False if no mention is made of cholesterol
+    """
     meal_plan_prompt: str = dspy.InputField()
-    low_cholesterol: bool = dspy.OutputField(desc="A boolean indicating whether or not a low cholesterol diet is indicated.")
+    low_cholesterol: bool = dspy.OutputField()
 
 class ExtractLowSatFat(dspy.Signature):
-    """Given a prompt, determine if it includes a request for meals or diets with low saturated fat."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a diet low in saturated fat?"
+    - Return a default value of False if no mention is made of saturated fat
+    """
     meal_plan_prompt: str = dspy.InputField()
-    low_sat_fat: bool = dspy.OutputField(desc="A boolean indicating whether or not a low saturated fat diet is indicated.")
+    low_sat_fat: bool = dspy.OutputField()
 
 class ExtractLowSodium(dspy.Signature):
-    """Given a prompt, determine if it includes a request for low sodium meals or diets."""
+    """
+    You are an information-extraction specialist. Always:
+    - Read the entire input carefully
+    - Extract only the fields and information requested
+    - Return them exactly as a single boolean, with no additional commentary
+    - Think in terms of entire meals only, not recipes or courses
+    - Your response should answer the question, "True or false, does the given prompt include a request for a low sodium diet?"
+    - Return a default value of False if no mention is made of sodium or salt
+    """
     meal_plan_prompt: str = dspy.InputField()
-    low_sodium: bool = dspy.OutputField(desc="A boolean indicating whether or not a low sodium diet is indicated.")
+    low_sodium: bool = dspy.OutputField()
 
 
 # Collect DSPy signatures into a module
@@ -103,8 +235,8 @@ class ExtractInfoModule(dspy.Module):
         dspy.configure(lm=lm)
 
         # Load optimized module from file
-        #path = Path("optimized", "extract_optimized.json")
-        #self.load(str(path))
+        # path = Path("optimized", "extract_optimized.json")
+        # self.load(str(path))
 
         # Add each extractor signature
         self.get_meal_count = dspy.ChainOfThought(signature=ExtractMealCount)

@@ -1,8 +1,19 @@
+import json
 import pathlib
 from difflib import SequenceMatcher
 import dspy
+from pydantic import BaseModel
 from dspy_data import train_set, dev_set
 from extract_info import ExtractInfoModule
+
+class TestResult(BaseModel):
+    prompt: str
+    score: float
+    expected: dict
+    predicted: dict
+
+test_results = []
+save_results = True
 
 def information_extraction_metric(gold, pred, trace=None):
     score = 0
@@ -23,6 +34,17 @@ def information_extraction_metric(gold, pred, trace=None):
     if gold.output["low_cholesterol"] == pred.low_cholesterol: score += 1
     if gold.output["low_sat_fat"] == pred.low_sat_fat: score += 1
     if gold.output["low_sodium"] == pred.low_sodium: score += 1
+
+    # Save test out to test result
+    if save_results:
+        test_result = TestResult(
+            prompt = gold.prompt,
+            score = score / 17,
+            expected = gold.output,
+            predicted = pred.model_dump()
+        )
+        test_results.append(test_result)
+
     if trace is not None:
         return score >= 17
     else:
@@ -30,7 +52,7 @@ def information_extraction_metric(gold, pred, trace=None):
 
 student = ExtractInfoModule()
 
-optimizer = dspy.BootstrapFewShot(
+bootstrap_optimizer = dspy.BootstrapFewShot(
     metric=information_extraction_metric,
     metric_threshold=0.75,
     max_labeled_demos=16,
@@ -39,8 +61,7 @@ optimizer = dspy.BootstrapFewShot(
     max_errors=30
 )
 
-optimized_program = optimizer.compile(student=student, trainset=train_set)
-
+optimized_program = bootstrap_optimizer.compile(student=student, trainset=train_set)
 
 # For reference, evaluate a set of test data and output the scores
 def test_unoptimized():
@@ -70,5 +91,10 @@ test_optimized()
 path = pathlib.Path("optimized", "extract_optimized.json")
 optimized_program.save(str(path))
 
+# Export the test results for review
+if save_results:
+    path = pathlib.Path("optimized", "test_results.json")
+    with open(path, "w") as f:
+        json.dump([r.model_dump() for r in test_results], f, indent=4)
 
-# Last scores: unoptimized (2), optimized (2.25) -> cumulative, not averaged
+# BootstrapFewShot scores: optimized (2.647) -> cumulative, not averaged

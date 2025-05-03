@@ -31,20 +31,21 @@ def auto_send(text: str):
 
 # Setup demo buttons
 demo_1, demo_2 = st.columns(2)
-if demo_1.button("Romantic meal for two", use_container_width=True):
-    auto_send("Plan a romantic French dinner for two that does not include asparagus. My partner is allergic to peanuts and I am on a low sodium diet.")
+if demo_1.button("Dinner for two", use_container_width=True):
+    auto_send("Plan a dinner for two that does not include asparagus. My partner is allergic to peanuts and I am on a low sodium diet.")
 
 if demo_2.button("Meals for family of four", use_container_width=True):
     auto_send("Plan two lunches and two dinners for a family of four. Pears and cheese sticks are favorites, and we do not like peanut butter. Try to keep the meals high in protein and low in fat.")
 
 # Setup streamlit title
-st.title("💬 Chatbot")
+st.title("💬 Meal Planner Chatbot")
 
 # If button is pressed, simulate prompt otherwise allow user input
 if "send_prompt" in st.session_state and st.session_state.send_prompt:
     user_input = st.session_state.auto_prompt
     st.session_state.send_prompt = False
 else:
+    st.chat_message("assistant").markdown("Hello! Click a demo button up top or enter a meal planning request below to get started.")
     user_input = st.chat_input()
 
 
@@ -56,12 +57,14 @@ if user_input:
 
     # Start spinner to indicate processing
     with st.spinner("Extracting meal criteria..."):
-        meals = extract_module.extract_meal_criteria(text=user_input)
-        requests = info_to_requests(meals)
-        json_string = json.dumps([m.model_dump() for m in requests])
-        markdown_meals = format_module.format_as_markdown(text=json_string)
+        meal_info = extract_module.extract_meal_criteria(text=user_input)
+        requests = info_to_requests(meal_info)
+        json_string = meal_info.model_dump_json()
+        markdown_meal_info = format_module.format_as_markdown(text=json_string)
 
-    st.chat_message("assistant").markdown(markdown_meals)
+    st.chat_message("assistant").markdown(json_string)
+    st.chat_message("assistant").markdown(markdown_meal_info)
+    # st.chat_message("assistant").markdown(requests)
 
     with st.spinner("Searching recipes..."):
         try:
@@ -71,6 +74,8 @@ if user_input:
 
     for r in recipes:
         json_string = json.dumps(r.model_dump())
+        #st.chat_message("assistant").markdown(json_string)
         recipe_markdown = format_module.format_as_markdown(text=json_string)
         st.chat_message("assistant").markdown(recipe_markdown)
 
+# Run program with streamlit run app.py

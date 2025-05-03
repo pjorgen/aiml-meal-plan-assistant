@@ -109,7 +109,7 @@ class RecipeDetail(RecipeSummary):
     creditsText: Optional[str] = None
     cuisines: Optional[List[Cuisine]] = None
     dairyFree: Optional[bool] = None
-    diets: Optional[List[Diet]] = None
+    diets: Optional[List[str]] = None
     gaps: Optional[str] = None
     glutenFree: Optional[bool] = None
     instructions: Optional[str] = None

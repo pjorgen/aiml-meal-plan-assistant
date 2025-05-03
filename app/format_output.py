@@ -1,9 +1,15 @@
 import dspy
 from lm import lm
-from pathlib import Path
 
 class FormatAsMarkdown(dspy.Signature):
-    """Given a structured JSON object, write a markdown formatted article for better readability."""
+    """
+    You are a markdown and json expert. Always:
+    - Read the entire input carefully
+    - Write markdown based solely on the input
+    - Return a markdown formatted string
+    - Break the result into sections based on the json input
+    - Be concise, and disregard any null or empty values in the input json
+    """
     json_object: str = dspy.InputField()
     markdown: str = dspy.OutputField(desc="A markdown string that is a human readable article.")
 
@@ -14,10 +20,6 @@ class FormatOutputModule(dspy.Module):
 
         # Configure dspy
         dspy.configure(lm=lm)
-
-        # Load optimized module from file
-        #path = Path("optimized", "extract_optimized.json")
-        #self.load(str(path))
 
         # Add each extractor signature
         self.markdown_formatter = dspy.ChainOfThought(signature=FormatAsMarkdown)

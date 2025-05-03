@@ -1,6 +1,7 @@
 import requests
 import os
 from classes import *
+from pprint import pprint
 
 # Function to search recipes using Spoonacular API
 def search_recipes(model: list[SearchRecipesRequest]) -> list[SearchRecipesResponse]:
@@ -23,5 +24,7 @@ def search_recipes(model: list[SearchRecipesRequest]) -> list[SearchRecipesRespo
         response.raise_for_status()
 
         data = response.json()
-        recipes.append(SearchRecipesResponse(**data))
+        # pprint(data)
+        recipe = SearchRecipesResponse(**data)
+        recipes.append(recipe)
     return recipes

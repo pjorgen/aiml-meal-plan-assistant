@@ -217,6 +217,29 @@ smart enough for what I needed, and I took the opportunity to upgrade to the 4B 
 the optimization is much more stable, though I'm still waiting on results since it takes about an hour to run still. 
 Depending on the results I may decide to run the optimizer again with higher settings, but we'll see.
 
+#### Day 4
+
+Today I began final tweaks. I let the optimizer run overnight, since it now takes close to 5 hours to complete. The results
+were... less than satisfactory, and indicated hardly any increase in score based on my custom metric function. Indeed, 
+in testing the demo it still performs poorly and tends to hallucinate pretty badly. I took several steps to increase the 
+performance and accuracy. First, I upgraded to the ollama model gemma3:12b, in hopes that additional parameters will 
+perform better. Thankfully my laptop has enough RAM to run it, since the model requires 8.1 GB for the 12b model. The
+second big change I made was to do additional prompt engineering in the DSPy signatures via the docstring to enhance the
+responses. Initial tests even with an unoptimized model were promising, resulting in marked improvement. 
+
+I did attempt to change the optimizer I was using from BootstrapFewShot to MIPROv2, but was unable to get it working in 
+the time given. Further, I think the limited training set was a hindrance in my optimization and training efforts, as 
+having only 20 examples greatly limited DSPy's ability to iterate and mutate prompt strategies. Future work would include
+developing a more comprehensive training set. Even 200 examples would go a long way to being better training data. 
+
+I spent a fair amount of time tweaking the program and trying to run various queries. I found that it was fairly unstable,
+and ended up removing some of the strong typing. The DSPy signatures were sometimes throwing errors when trying to return 
+values that were filtered by literal values, and even the API I'm using was causing issues by sending unspecified values
+for certain parameters. By loosening the expected values a bit, I was able to avoid more of the issues.
+
+However, the issue with the LLM calls remains where it sometimes picks out extra cuisines, ingredients, diets, and other
+information that isn't indicated by the prompt. 
+
 
 ## Future Development
 There is limited time and effort available to complete this project at this time, which leaves several features for future
@@ -231,4 +254,4 @@ consideration. These are parked here for reference.
 - Dev day 1 (initial dspy module and optimization): 8 hours
 - Dev day 2 (additional dspy and api setup): 8 hours
 - Dev day 3 (Adding StreamLit UI and reworking dspy): 9 hours
-- 
+- Dev day 4 (Final DSPy rework and containerization): 
