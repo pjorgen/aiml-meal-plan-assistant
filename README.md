@@ -1,5 +1,6 @@
 # Meal Planning Assistant
 #### An AI project for the MSSE program, completed by Phil Jorgensen
+#### [Link to Github](https://github.com/pjorgen/aiml-meal-plan-assistant)
 
 ## Problem Statement
 Meal planning can be difficult, especially when you try to find recipes for ingredients you have on hand or are trying

@@ -38,7 +38,7 @@ def information_extraction_metric(gold, pred, trace=None):
     # Save test out to test result
     if save_results:
         test_result = TestResult(
-            prompt = gold.prompt,
+            prompt = gold.text,
             score = score / 17,
             expected = gold.output,
             predicted = pred.model_dump()

@@ -235,8 +235,8 @@ class ExtractInfoModule(dspy.Module):
         dspy.configure(lm=lm)
 
         # Load optimized module from file
-        # path = Path("optimized", "extract_optimized.json")
-        # self.load(str(path))
+        path = Path("optimized", "extract_optimized.json")
+        self.load(str(path))
 
         # Add each extractor signature
         self.get_meal_count = dspy.ChainOfThought(signature=ExtractMealCount)
