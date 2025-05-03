@@ -238,7 +238,8 @@ values that were filtered by literal values, and even the API I'm using was caus
 for certain parameters. By loosening the expected values a bit, I was able to avoid more of the issues.
 
 However, the issue with the LLM calls remains where it sometimes picks out extra cuisines, ingredients, diets, and other
-information that isn't indicated by the prompt. 
+information that isn't indicated by the prompt. There's also a strange issue where sometimes it looks like it should be
+requesting or searching for multiple recipes, but only returns one.
 
 
 ## Future Development
@@ -254,4 +255,4 @@ consideration. These are parked here for reference.
 - Dev day 1 (initial dspy module and optimization): 8 hours
 - Dev day 2 (additional dspy and api setup): 8 hours
 - Dev day 3 (Adding StreamLit UI and reworking dspy): 9 hours
-- Dev day 4 (Final DSPy rework and containerization): 
+- Dev day 4 (Final DSPy rework and containerization): 6 hours
